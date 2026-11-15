@@ -22,3 +22,21 @@ export class NotFoundError extends AppError {
     super(404, 'not_found', message, details);
   }
 }
+
+export class InsufficientFundsError extends AppError {
+  constructor(balance: string, requested: string) {
+    super(422, 'insufficient_funds', 'wallet balance is too low for this operation', {
+      balance,
+      requested,
+    });
+  }
+}
+
+export class InvalidTransitionError extends AppError {
+  constructor(from: string, to: string) {
+    super(409, 'invalid_state_transition', `cannot move a funding transaction from ${from} to ${to}`, {
+      from,
+      to,
+    });
+  }
+}
