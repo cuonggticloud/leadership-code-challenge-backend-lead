@@ -12,6 +12,12 @@ import { InsufficientFundsError, NotFoundError } from '../lib/errors';
 export const depositCreditKey = (fundingTransactionId: string): string =>
   `deposit:${fundingTransactionId}`;
 
+// Wagers have no external reference to key on, so this is unique but not
+// deduplicating: it satisfies the constraint without providing replay
+// protection. Making wagers idempotent needs a client-supplied Idempotency-Key,
+// which the brief's API does not define.
+export const newWagerKey = (): string => `wager:${randomUUID()}`;
+
 // Takes the wallet's row lock.
 export async function lockWalletById(walletId: string, t: Transaction): Promise<Wallet> {
   const wallet = await Wallet.findByPk(walletId, { lock: true, transaction: t });
