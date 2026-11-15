@@ -18,11 +18,23 @@ export const depositCreditKey = (fundingTransactionId: string): string =>
 // which the brief's API does not define.
 export const newWagerKey = (): string => `wager:${randomUUID()}`;
 
+export const withdrawalDebitKey = (fundingTransactionId: string): string =>
+  `withdrawal:${fundingTransactionId}`;
+
 // Takes the wallet's row lock.
 export async function lockWalletById(walletId: string, t: Transaction): Promise<Wallet> {
   const wallet = await Wallet.findByPk(walletId, { lock: true, transaction: t });
   if (!wallet) {
     throw new NotFoundError('wallet not found', { walletId });
+  }
+  return wallet;
+}
+
+// Withdrawals are addressed by member rather than by wallet.
+export async function lockWalletByMemberId(memberId: string, t: Transaction): Promise<Wallet> {
+  const wallet = await Wallet.findOne({ where: { memberId }, lock: true, transaction: t });
+  if (!wallet) {
+    throw new NotFoundError('no wallet found for that member', { memberId });
   }
   return wallet;
 }

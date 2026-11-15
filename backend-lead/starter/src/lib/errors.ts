@@ -40,3 +40,15 @@ export class InvalidTransitionError extends AppError {
     });
   }
 }
+
+// 422 carrying how much turnover is still outstanding, so the client can tell
+// the player exactly how much more they need to wager.
+export class TurnoverNotMetError extends AppError {
+  constructor(requiredTurnover: string, accruedTurnover: string, outstandingTurnover: string) {
+    super(422, 'turnover_not_met', 'withdrawal is locked until the turnover requirement is met', {
+      requiredTurnover,
+      accruedTurnover,
+      outstandingTurnover,
+    });
+  }
+}
